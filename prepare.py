@@ -95,5 +95,74 @@ def clean_iris(df):
 
 
 
+    ########### Titanic Data ############
+
+def clean_titanic_data(df):
+
+    df = df.drop_duplicates()
+
+    columns = ['deck' , 'embarked' , 'class']
+    df = df.drop(columns)
+
+    df['embark_town'] = df.embark_town.fillna(value = 'Southampton')
+
+    dummy_df = pd.get_dummies(df[['sex' , 'embark_town']], dummy_na = False, drop_first = [True, True])
+    df = pd.concat([df, dummy_df] , axis = 1)
+
+    return df 
+
+
+def impute_titanic_mode(train, validate, test):
+    '''
+    Takes in train, validate, and test, and uses train to identify the best value to replace nulls in embark_town
+    Imputes that value into all three sets and returns all three sets
+    '''
+    imputer = SimpleImputer(missing_values = np.nan, strategy='most_frequent')
+    train[['embark_town']] = imputer.fit_transform(train[['embark_town']])
+    validate[['embark_town']] = imputer.transform(validate[['embark_town']])
+    test[['embark_town']] = imputer.transform(test[['embark_town']])
+    return train, validate, test
+
+
+
+    def impute_mean_age(train, validate, test):
+    '''
+    This function imputes the mean of the age column for
+    observations with missing values.
+    Returns transformed train, validate, and test df.
+    '''
+    # create the imputer object with mean strategy
+    imputer = SimpleImputer(strategy = 'mean')
+    
+    # fit on and transform age column in train
+    train['age'] = imputer.fit_transform(train[['age']])
+    
+    # transform age column in validate
+    validate['age'] = imputer.transform(validate[['age']])
+    
+    # transform age column in test
+    test['age'] = imputer.transform(test[['age']])
+    
+    return train, validate, test
+
+
+
+def prep_titanic_data(df):
+    '''
+    Combines the clean_titanic_data, split_titanic_data, and impute_mean_age functions.
+    '''
+    df = clean_titanic_data(df)
+
+    train, validate, test = split_titanic_data(df)
+    
+    train, validate, test = impute_mean_age(train, validate, test)
+
+    return train, validate, test
+
+
+
+
+
+
 
 
