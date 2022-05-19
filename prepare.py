@@ -67,7 +67,7 @@ def prep_iris(df):
     ############## TELCO DATA PREPARE#########
 
 
-    def split_telco_data(df):
+def split_telco_data(df):
   
         train_validate, test = train_test_split(df, test_size= .2, 
                                                     random_state= 123, 
@@ -79,8 +79,7 @@ def prep_iris(df):
 
 
 
-
-    def prep_telco_data(df):
+def prep_telco_data(df):
     #drop columns that aren't necessary 
     
         columns = ['customer_id', 'payment_type_id', 'internet_service_type_id' , 'contract_type_id']
@@ -112,10 +111,7 @@ def prep_iris(df):
     
         df = pd.concat([df, dummy_df], axis = 1)
     
-    ## split the data
-        train, validate, test = split_telco_data
-    
-        return train, validate, test
+        return df
      
 
 
